@@ -1,0 +1,105 @@
+<script>
+
+const usernameScreen = document.getElementById("username-screen");
+const quizContainer = document.getElementById("quiz-container");
+const startBtn = document.getElementById("start-btn");
+const usernameInput = document.getElementById("username-input");
+
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const resultEl = document.getElementById("result");
+
+function loadQuizByIndex(qNo) {
+  const quiz = quizData;
+
+  if (!quiz) {
+    questionEl.textContent = "指定された問題が存在しません。";
+    choicesEl.innerHTML = "";
+    return;
+  }
+
+  questionEl.textContent = quiz.question;
+  choicesEl.innerHTML = "";
+  resultEl.textContent = "";
+
+  quiz.choices.forEach((choice, i) => {
+    const btn = document.createElement("button");
+    btn.classList.add("choice-btn");
+    btn.textContent = choice;
+    btn.addEventListener("click", () => checkAnswer(qNo, i, Number(quiz.correct)-1));
+    choicesEl.appendChild(btn);
+  });
+}
+
+function checkAnswer(qNo, selected, correctIndex) {
+  const buttons = document.querySelectorAll(".choice-btn");
+  buttons.forEach((btn, index) => {
+    btn.disabled = true;
+    if (index === correctIndex) {
+      btn.style.backgroundColor = "#a5d6a7"; // 正解: 緑
+    } else if (index === selected) {
+      btn.style.backgroundColor = "#ef9a9a"; // 不正解: 赤
+    }
+  });
+
+  const correct = selected === correctIndex;
+  resultEl.textContent = correct ? "正解！" : "不正解...";
+
+  let score = parseInt(localStorage.getItem("score")) || 0;
+  if (correct) {
+    score++;
+    localStorage.setItem("score", score);
+  }
+
+  if (qNo >= Number(quizLen)) {
+    // 最後の問題なら結果表示（少し待ってから）
+    setTimeout(() => {
+      showResultScreen(score);
+    }, 3000);
+  }
+  // 次へは進まない（明示的にボタンがないため）
+}
+
+// 終了時の結果表示
+function showResultScreen(score) {
+  const username = localStorage.getItem("username") || "プレイヤー";
+  questionEl.textContent = `${username}さん、全問終了！`;
+  choicesEl.innerHTML = "";
+  resultEl.textContent = `あなたの正解数：${score} / ${quizLen}`;
+  localStorage.removeItem("username");
+  localStorage.removeItem("score");
+}
+
+// スタートボタン処理（ユーザー名入力 → スタートメッセージ表示 → クイズ開始）
+startBtn.addEventListener("click", () => {
+  const username = usernameInput.value.trim();
+  if (!username) {
+    alert("ユーザー名を入力してください");
+    return;
+  }
+
+  localStorage.setItem("username", username);
+  localStorage.setItem("score", 0); // スコア初期化
+
+  // 名前表示メッセージを表示
+  usernameScreen.innerHTML = `<h2>${username}さん<br>日本工学院ITカレッジ謎解きツアー<br>スタート！！</h2>`;
+
+});
+
+window.addEventListener("load", () => {
+  const username = localStorage.getItem("username");
+
+  if (q === "reset") {
+    localStorage.removeItem("username");
+    localStorage.removeItem("score");
+  }
+  else if (q <= 0) {
+    usernameScreen.style.display = "block";
+    quizContainer.style.display = "none";
+  } else {
+    usernameScreen.style.display = "none";
+    quizContainer.style.display = "block";
+    loadQuizByIndex(parseInt(q, 10) || 0);
+  }
+});
+  </script>

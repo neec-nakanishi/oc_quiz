@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日本工学院ITカレッジ謎解きツアー</title>
+  <?!= include('css'); ?>
+</head>
+<body>
+  <img src="https://lh3.google.com/u/0/d/1UW96OzQncDVatDN4a5YGdcStAPg3q386" alt="画像">
+  <br>
+  <!-- ユーザー名入力画面 -->
+  <div class="username-screen" id="username-screen" style="display: none;">
+    <h2>ユーザー名を入力してください</h2>
+    <input type="text" id="username-input" placeholder="例：たろう" />
+    <button id="start-btn">スタート</button>
+  </div>
+
+  <!-- クイズ表示画面 -->
+  <div class="quiz-container" id="quiz-container" style="display: none;">
+    <h2 id="question"></h2>
+    <div id="choices" class="choices"></div>
+    <p id="result"></p>
+  </div>
+  <script>
+    let q = <?= q ?>;
+    let quizLen = <?= quizLen ?>;
+
+    const quizData = {question:<?= data[0] ?>, choices: [<?= data[1] ?>, <?= data[2] ?>, <?= data[3] ?>, <?= data[4] ?>,], correct: <?= data[5] ?>};
+  </script>
+  <?!= include('script'); ?>
+</body>
+</html>
